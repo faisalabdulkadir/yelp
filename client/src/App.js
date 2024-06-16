@@ -6,7 +6,8 @@ import UpdatePage from "./routes/UpdatePage";
 
 function App() {
   return (
-    <BrowserRouter>
+    <div className="container">
+      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -15,6 +16,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </div>
   );
 }
 
