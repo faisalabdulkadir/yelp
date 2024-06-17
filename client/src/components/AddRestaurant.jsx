@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
+import { RestaurantsContext } from "../context/RestaurantsContext";
 
 const AddRestaurant = () => {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [priceRange, setPriceRange] = useState("Price Range");
+
+  const { addRestaurant } = useContext(RestaurantsContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,7 +17,7 @@ const AddRestaurant = () => {
       price_range: priceRange,
     });
 
-    console.log(response);
+    addRestaurant(response.data.data.restaurants);
   };
 
   return (
