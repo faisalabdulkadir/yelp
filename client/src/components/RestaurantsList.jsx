@@ -1,9 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
 import { RestaurantsContext } from "../context/RestaurantsContext";
+import { useNavigate } from "react-router-dom";
 
 const RestaurantsList = (props) => {
   const { restaurants, setRestaurants } = useContext(RestaurantsContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +30,11 @@ const RestaurantsList = (props) => {
       console.log(error);
     }
   };
+
+  const handleUpdate = (id) => {
+    navigate(`/restaurants/${id}/update`);
+  };
+
   return (
     <div>
       <table className="table table-dark table-hover">
@@ -49,7 +57,11 @@ const RestaurantsList = (props) => {
                 <td>{"$".repeat(restaurant.price_range)}</td>
                 <td>review</td>
                 <td>
-                  <button type="button" className="btn btn-warning">
+                  <button
+                    onClick={() => handleUpdate(restaurant.id)}
+                    type="button"
+                    className="btn btn-warning"
+                  >
                     Update
                   </button>
                 </td>
@@ -64,39 +76,6 @@ const RestaurantsList = (props) => {
                 </td>
               </tr>
             ))}
-          {/* <tr>
-            <td>McDonalds</td>
-            <td>Vegas</td>
-            <td>$$</td>
-            <td>Ratings</td>
-            <td>
-              <button type="button" className="btn btn-warning">
-                Update
-              </button>
-            </td>
-            <td>
-              <button type="button" className="btn btn-danger">
-                Delete
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>McDonalds</td>
-            <td>Vegas</td>
-            <td>$$</td>
-            <td>Ratings</td>
-            <td>
-              <button type="button" className="btn btn-warning">
-                Update
-              </button>
-            </td>
-            <td>
-              <button type="button" className="btn btn-danger">
-                Delete
-              </button>
-            </td>
-          </tr> */}
         </tbody>
       </table>
     </div>
