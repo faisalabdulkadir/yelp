@@ -17,6 +17,16 @@ const RestaurantsList = (props) => {
 
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await RestaurantFinder.delete(`/${id}`);
+      setRestaurants(restaurants.filter((restaurant) => restaurant.id != id));
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <table className="table table-dark table-hover">
@@ -44,7 +54,11 @@ const RestaurantsList = (props) => {
                   </button>
                 </td>
                 <td>
-                  <button type="button" className="btn btn-danger">
+                  <button
+                    onClick={() => handleDelete(restaurant.id)}
+                    type="button"
+                    className="btn btn-danger"
+                  >
                     Delete
                   </button>
                 </td>
