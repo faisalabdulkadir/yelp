@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import RestaurantFinder from "../apis/RestaurantFinder";
+import { RestaurantsContext } from "../context/RestaurantsContext";
 
-const RestaurantsList = () => {
+const RestaurantsList = (props) => {
+  const { restaurants, setRestaurants } = useContext(RestaurantsContext);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await RestaurantFinder.get("/");
+        setRestaurants(response.data.data.restaurants);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div>
-      <table class="table table-dark table-hover">
+      <table className="table table-dark table-hover">
         <thead className="table-primary">
           <tr>
             <th scope="col">Restaurant</th>
@@ -15,7 +31,26 @@ const RestaurantsList = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
+          {restaurants &&
+            restaurants.map((restaurant) => (
+              <tr key={restaurant.id}>
+                <td>{restaurant.name}</td>
+                <td>{restaurant.location}</td>
+                <td>{"$".repeat(restaurant.price_range)}</td>
+                <td>review</td>
+                <td>
+                  <button type="button" className="btn btn-warning">
+                    Update
+                  </button>
+                </td>
+                <td>
+                  <button type="button" className="btn btn-danger">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          {/* <tr>
             <td>McDonalds</td>
             <td>Vegas</td>
             <td>$$</td>
@@ -47,7 +82,7 @@ const RestaurantsList = () => {
                 Delete
               </button>
             </td>
-          </tr>
+          </tr> */}
         </tbody>
       </table>
     </div>
