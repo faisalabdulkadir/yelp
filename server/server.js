@@ -18,12 +18,15 @@ const port = process.env.PORT || 3001;
 //Get all Restaurants
 app.get("/api/v1/restaurants", async (req, res) => {
   try {
-    const results = await db.query("select * from restaurants");
+    const restaurantsRatingsData = await db.query(
+      "select * from restaurants left join (select restaurant_id, count(*), trunc(avg(rating),1) as avg_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id"
+    );
+
     res.status(200).json({
       status: "success",
-      results: results.rows.length,
+      results: restaurantsRatingsData.rows.length,
       data: {
-        restaurants: results.rows,
+        restaurants: restaurantsRatingsData.rows,
       },
     });
   } catch (error) {
@@ -35,7 +38,7 @@ app.get("/api/v1/restaurants", async (req, res) => {
 app.get("/api/v1/restaurants/:id", async (req, res) => {
   try {
     const restaurant = await db.query(
-      "select * from restaurants where id = $1",
+      "select * from restaurants left join (select restaurant_id, count(*), trunc(avg(rating),1) as avg_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id where id=$1",
       [req.params.id]
     );
 
