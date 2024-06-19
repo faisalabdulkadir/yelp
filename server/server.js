@@ -34,13 +34,20 @@ app.get("/api/v1/restaurants", async (req, res) => {
 //Get a Restaurant
 app.get("/api/v1/restaurants/:id", async (req, res) => {
   try {
-    const results = await db.query("select * from restaurants where id = $1", [
-      req.params.id,
-    ]);
+    const restaurant = await db.query(
+      "select * from restaurants where id = $1",
+      [req.params.id]
+    );
+
+    const reviews = await db.query(
+      "select * from reviews where restaurant_id = $1",
+      [req.params.id]
+    );
     res.status(200).json({
       status: "success",
       data: {
-        restaurants: results.rows[0],
+        restaurants: restaurant.rows[0],
+        review: reviews.rows,
       },
     });
   } catch (error) {
@@ -97,6 +104,24 @@ app.delete("/api/v1/restaurants/:id", async (req, res) => {
   res.status(204).json({
     status: "success",
   });
+});
+
+//Add a review
+app.post("/api/v1/restaurants/:id/addReview", async (req, res) => {
+  try {
+    const newReview = await db.query(
+      "INSERT INTO reviews (restaurant_id, name, review, rating) VALUES ($1, $2, $3, $4) RETURNING *",
+      [req.params.id, req.body.name, req.body.review, req.body.rating]
+    );
+    res.status(201).json({
+      status: "success",
+      data: {
+        reviews: newReview.rows[0],
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.listen(port, () => {
