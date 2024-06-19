@@ -4,6 +4,7 @@ import RestaurantFinder from "../apis/RestaurantFinder";
 import { useParams } from "react-router-dom";
 import Reviews from "../components/Reviews";
 import AddReview from "../components/AddReview";
+import StarRating from "../components/StarRating";
 
 const RestaurantsDetailPage = () => {
   const { selectedRestaurants, setSelectedRestaurants } =
@@ -21,15 +22,29 @@ const RestaurantsDetailPage = () => {
     };
     fetchData();
   }, []);
-  return <div>{selectedRestaurants && (
-    <>
-    <h1 className="fw-lighter fs-1 text-center">{selectedRestaurants.restaurants.name}</h1>
-    <div className="mt-4">
-      <Reviews reviews={selectedRestaurants.review}/>
+  return (
+    <div>
+      {selectedRestaurants && (
+        <>
+          <h1 className="fw-lighter fs-1 text-center">
+            {selectedRestaurants.restaurants.name}
+          </h1>
+          <div className="text-center">
+            <StarRating rating={selectedRestaurants.restaurants.avg_rating} />
+            <span className="text-center text-warning">
+              {selectedRestaurants.restaurants.count
+                ? `(${selectedRestaurants.restaurants.count})`
+                : "(0)"}
+            </span>
+          </div>
+          <div className="mt-4">
+            <Reviews reviews={selectedRestaurants.review} />
+          </div>
+          <AddReview />
+        </>
+      )}
     </div>
-    <AddReview />
-    </>
-  )}</div>;
+  );
 };
 
 export default RestaurantsDetailPage;
